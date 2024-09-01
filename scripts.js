@@ -23,12 +23,13 @@ const call = async (e) => {
 
   // PeerConnection is all set with out STUN servers sent over
   await createPeerConnection();
-  //   Create Offer
 
+  //   Create Offer
   try {
     console.log("............Creating Offer.............");
     const offer = await peerConnection.createOffer();
     console.log(offer);
+    peerConnection.setLocalDescription(offer);
   } catch (err) {
     console.log(err);
   }
