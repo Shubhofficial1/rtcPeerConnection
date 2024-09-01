@@ -1,3 +1,5 @@
+const socket = io.connect("https://localhost:9000");
+
 const localVideoEl = document.querySelector("#local-video");
 const remoteVideoEl = document.querySelector("#remote-video");
 
