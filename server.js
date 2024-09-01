@@ -14,6 +14,35 @@ expressServer.listen(9000, () => {
   console.log("Server is running on port 9000");
 });
 
-io.on("connection", () => {
-  console.log("Someone has connected");
+const offers = [];
+const connectedSockets = [];
+
+io.on("connection", (socket) => {
+  //   console.log("Someone has connected");
+  const userName = socket.handshake.auth.userName;
+  const password = socket.handshake.auth.password;
+
+  if (password !== "x") {
+    socket.disconnect(true);
+    return;
+  }
+
+  connectedSockets.push({
+    socketId: socket.id,
+    userName,
+  });
+
+  socket.on("newOffer", (newOffer) => {
+    offers.push({
+      offererUserName: userName,
+      offer: newOffer,
+      offererIceCandidate: [],
+      answererUserName: null,
+      offer: null,
+      answererIceCandidate: [],
+    });
+
+    // Send out to all connected sockets EXCEPT the caller
+    socket.broadcast.emit("newOfferAwaiting", offers.slice(-1));
+  });
 });
